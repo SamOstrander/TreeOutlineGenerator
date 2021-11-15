@@ -81,7 +81,7 @@ public class TreeLimb {
 
         next_side = new Random().nextInt(2);
         
-        if(isBranching) //sub_branch < 3)  //Stop branching 3 deep.
+        if(isBranching)  //Stops branching at third sub_branch.
             update_next();
     }
 
@@ -159,18 +159,13 @@ public class TreeLimb {
 
     public void update_line()
     {
-        //call when length has been changed (or upon creation of the branch)
-
-            //get new tip point.
+        //call when length has been changed (or upon creation of the branch). Updates constants. Slopes remain unchanged.
         
-        Point2D.Double branch_tip = get_tip(); // new Point2D.Double(position.getX() + length*Math.cos(Math.toRadians(angle)),position.getY() +length*Math.sin(Math.toRadians(angle)));
-            //Update line constants. Slopes remain unchanged.
+            //get new tip point.
+        Point2D.Double branch_tip = get_tip();
+        
         lb = branch_tip.getY() - branch_tip.getX()*lm;
-
         rb = branch_tip.getY() - branch_tip.getX()*rm;
-
-        //System.out.println(lb);
-        //System.out.println(rb);
     }
 
     public void grow_by_time(double time)
@@ -191,15 +186,13 @@ public class TreeLimb {
         //that is stored at creation as [position].
         
         //Central line or branch skeleton.
-        //constant = startPoint_Y - (tan ( angle) * startPoint_X )
         cm = Math.tan(Math.toRadians(angle));
         cb = position.getY() - position.getX()*cm;
         
         //x = r cos(theta) where r is length and theta is angle from origin to target point.
-            //use central line to get branch_tip.
-        Point2D.Double branch_tip = get_tip();//new Point2D.Double(position.getX() + length*Math.cos(Math.toRadians(angle)),position.getY() + length*Math.sin(Math.toRadians(angle)));
+        Point2D.Double branch_tip = get_tip();
 
-        //branch_tip used to create 2 lines. angle offset by have of branch tip angle
+        //branch_tip used to create 2 lines. angle offset by half of branch tip angle.
         lm = Math.tan(Math.toRadians(angle + half_branchtip_angle));
         lb = branch_tip.getY() - branch_tip.getX()*lm;
 
@@ -214,23 +207,19 @@ public class TreeLimb {
         double m2 = parent_side < 1 ? parent.get_leftslope() : parent.get_rightslope();
         double b1 = side < 1 ? lb : rb;
         double b2 = parent_side < 1 ? parent.get_leftconstant() : parent.get_rightconstant();
-        
-        //System.out.println("y1="+m1+"x1+"+b1+"|y2="+m2+"x2+"+b2);
 
         if(m1 == m2)
         {
             //slopes are equivalent aka parallel lines. this shoudn't happen. 
-            System.out.println("Parallel slopes, meaning either 0 intersections points or infinite.");
             return null;
         }
         else
-            //System.out.println("INTERSECTION: " + new Point2D.Double((-1*b2 - -1*b1) / (m1*-1 - m2*-1),(b1*m2 - b2*m1) / (m1*-1 - m2*-1)));
             return new Point2D.Double((-1*b2 - -1*b1) / (m1*-1 - m2*-1),(b1*m2 - b2*m1) / (m1*-1 - m2*-1));
-            //return new Point2D.Double((-b2 + b1)/(-m1 + m2),(b1*m2)/(-m1 + m2));
     }
 
     public Point2D.Double get_tip()
     {
+        //uses central line to get branch_tip.
         return new Point2D.Double(position.getX() + length*Math.cos(Math.toRadians(angle)),position.getY() + length*Math.sin(Math.toRadians(angle)));
     }
 
