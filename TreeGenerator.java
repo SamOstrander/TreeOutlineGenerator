@@ -65,7 +65,7 @@ public class TreeGenerator {
     {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
-        int window_h = int window_h = 1024;//(int)screenSize.getHeight();   //switched to fixed height
+        int window_h = 1024;//(int)screenSize.getHeight();   //switched to fixed height
         int window_w = window_h;
 
         max_height = (double)window_h-240;  //used in capping height of tree.
